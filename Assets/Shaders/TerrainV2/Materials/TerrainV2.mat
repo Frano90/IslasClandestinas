@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureBAlbedo:
-        m_Texture: {fileID: 2800000, guid: 3642e52bc8bfd4442a267c623d7aecb3, type: 3}
+        m_Texture: {fileID: 2800000, guid: 83f1f379865285843ac7420ad2ff70d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureBNormal:
@@ -84,7 +84,7 @@ Material:
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _TextureATiling: {r: 150, g: 150, b: 0, a: 0}
-    - _TextureBTiling: {r: 150, g: 150, b: 0, a: 0}
+    - _TextureBTiling: {r: 400, g: 400, b: 0, a: 0}
     - _TextureBaseTiling: {r: 150, g: 150, b: 0, a: 0}
     - _TextureGTiling: {r: 70, g: 70, b: 0, a: 0}
     - _TextureRTiling: {r: 150, g: 150, b: 0, a: 0}

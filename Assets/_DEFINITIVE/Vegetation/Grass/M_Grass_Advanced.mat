@@ -13,7 +13,7 @@ Material:
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoliageTexture:
-        m_Texture: {fileID: 2800000, guid: aa3f5c93e1b271345a875c5ef4ebf6f9, type: 3}
+        m_Texture: {fileID: 2800000, guid: e394f00354af3064fa2db50313d892af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoliageTexture1:
@@ -65,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PanningWaveTexture:
-        m_Texture: {fileID: 2800000, guid: e3adc16eb3921de48a178ce82c92cbd1, type: 3}
+        m_Texture: {fileID: 2800000, guid: f29030b9f9ae47445ab904d8a291177d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -73,7 +73,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _VariationMask:
-        m_Texture: {fileID: 2800000, guid: f3a1f84b44733e44e9e06b47e364540b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0821733751d0c424aa7deb208b2fa970, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WijndNoiseTexture:
@@ -81,7 +81,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WindNoiseTexture:
-        m_Texture: {fileID: 2800000, guid: f3a1f84b44733e44e9e06b47e364540b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0821733751d0c424aa7deb208b2fa970, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -101,12 +101,14 @@ Material:
     - _DetailNormalMapScale: 1
     - _DiversityScale: 12.81
     - _DstBlend: 0
+    - _Float0: 0.1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _InteractionAlpha: 1
     - _Metallic: 0
     - _Mode: 0
+    - _MultiplyIntensity: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PivotLockPower: 0.6
@@ -116,7 +118,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _VariationMapScale: 9.6
-    - _WaveScale: 1.2
+    - _WaveScale: 40.06
     - _WindLargeScale: 0.111635454
     - _WindNoiseLarge: 0.78
     - _WindNoiseLargeMultiply: 0.06
@@ -127,16 +129,18 @@ Material:
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorBottom: {r: 0.54544586, g: 0.8018868, b: 0, a: 1}
+    - _ColorBladeDetails: {r: 0.20700668, g: 0.5, b: 0.025943398, a: 1}
+    - _ColorBottom: {r: 0.3333333, g: 0.7529412, b: 0.082352914, a: 1}
     - _ColorBottom1: {r: 0.26925772, g: 0.49056602, b: 0.011569952, a: 1}
     - _ColorOVerlay: {r: 1, g: 0.9371227, b: 0, a: 1}
-    - _ColorTop: {r: 0.43535578, g: 0.5849056, b: 0, a: 1}
+    - _ColorTop: {r: 0.23921569, g: 0.54509807, b: 0.07450981, a: 1}
     - _ColorTop1: {r: 0.37178555, g: 0.6603774, b: 0.04049486, a: 1}
-    - _ColorTopVariation: {r: 1, g: 0.9229307, b: 0, a: 0}
+    - _ColorTopVariation: {r: 0.5471698, g: 0.4823529, b: 0.0903346, a: 1}
     - _ColorWave: {r: 0.07332755, g: 0.25471687, b: 0, a: 1}
     - _ColorWave1: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _VariationColor: {r: 0, g: 0, b: 0, a: 0}
     - _Vector0: {r: 0, g: 0.2, b: 0, a: 0}
     - _Vector1: {r: 0, g: 0.1, b: 0, a: 0}
-    - _WaveSpeed: {r: 0.3207546, g: 0.025720898, b: 0.025720898, a: 0}
+    - _WaveSpeed: {r: 0.2924528, g: 0.034487356, b: 0.034487356, a: 0}
   m_BuildTextureStacks: []
