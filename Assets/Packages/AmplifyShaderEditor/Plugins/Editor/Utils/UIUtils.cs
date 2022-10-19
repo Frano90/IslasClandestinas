@@ -253,6 +253,7 @@ namespace AmplifyShaderEditor
 		public static GUIStyle MiniButtonTopRight;
 
 		public static GUIStyle CommentaryTitle;
+		public static GUIStyle StickyNoteText;
 		public static GUIStyle InputPortLabel;
 		public static GUIStyle OutputPortLabel;
 
@@ -410,6 +411,34 @@ namespace AmplifyShaderEditor
 			"DIRECTIONAL_COOKIE"
 
 		};
+
+		private static Dictionary<string, int> AvailableURPKeywordsDict = new Dictionary<string, int>();
+		public static readonly string[] AvailableURPKeywords =
+		{
+			"Custom",
+			"ETC1_EXTERNAL_ALPHA",
+			"PIXELSNAP_ON",
+			"SHADERPASS_EXTRA_PREPASS",
+			"SHADERPASS_FORWARD",
+			"SHADERPASS_SHADOWCASTER",
+			"SHADERPASS_DEPTHONLY",
+			"SHADERPASS_META",
+			"SHADERPASS_2D",
+			"UNITY_INSTANCING_ENABLED",
+			"DIRECTIONAL_COOKIE"
+		};
+
+		//private static Dictionary<string, string> URPToBultinKeywordsDict = new Dictionary<string, string>()
+		//{
+		//	{"SHADERPASS_FORWARD","UNITY_PASS_FORWARDBASE"},
+		//	{"SHADERPASS_SHADOWCASTER","UNITY_PASS_SHADOWCASTER"}
+		//};
+
+		//private static Dictionary<string, string> BultinToURPKeywordsDict = new Dictionary<string, string>()
+		//{
+		//	{"UNITY_PASS_FORWARDBASE","SHADERPASS_FORWARD"},
+		//	{"UNITY_PASS_SHADOWCASTER","SHADERPASS_SHADOWCASTER"}
+		//};
 
 		public static readonly string[] CategoryPresets =
 		{
@@ -857,6 +886,7 @@ namespace AmplifyShaderEditor
 			Textfield = null;
 
 			CommentaryTitle = null;
+			StickyNoteText = null;
 			InputPortLabel = null;
 			OutputPortLabel = null;
 
@@ -958,6 +988,7 @@ namespace AmplifyShaderEditor
 				InputPortLabel.fontSize = (int)( Constants.DefaultFontSize );
 				OutputPortLabel.fontSize = (int)( Constants.DefaultFontSize );
 				CommentaryTitle.fontSize = (int)( Constants.DefaultFontSize );
+				StickyNoteText.fontSize = (int)( Constants.DefaultFontSize );
 			}
 		}
 
@@ -1007,6 +1038,9 @@ namespace AmplifyShaderEditor
 			}
 
 			CommentaryTitle = new GUIStyle( MainSkin.customStyles[ (int)CustomStyle.CommentaryTitle ] );
+			StickyNoteText = new GUIStyle( MainSkin.customStyles[ (int)CustomStyle.CommentaryTitle ] );
+			StickyNoteText.wordWrap = true;
+			StickyNoteText.alignment = TextAnchor.UpperLeft;
 			InputPortLabel = new GUIStyle( MainSkin.customStyles[ (int)CustomStyle.InputPortlabel ] );
 			OutputPortLabel = new GUIStyle( MainSkin.customStyles[ (int)CustomStyle.OutputPortLabel ] );
 
@@ -1190,6 +1224,7 @@ namespace AmplifyShaderEditor
 			InputPortLabel.fontSize = (int)( Constants.DefaultFontSize * drawInfo.InvertedZoom );
 			OutputPortLabel.fontSize = (int)( Constants.DefaultFontSize * drawInfo.InvertedZoom );
 			CommentaryTitle.fontSize = (int)( Constants.DefaultFontSize * drawInfo.InvertedZoom );
+			StickyNoteText.fontSize = (int)( Constants.DefaultFontSize * drawInfo.InvertedZoom );
 
 			RangedFloatSliderStyle.fixedHeight = 18 * drawInfo.InvertedZoom;
 			RangedFloatSliderThumbStyle.fixedHeight = 12 * drawInfo.InvertedZoom;
@@ -1361,7 +1396,7 @@ namespace AmplifyShaderEditor
 				case WirePortDataType.SAMPLERCUBE:
 				case WirePortDataType.SAMPLER2DARRAY:
 				ParentGraph outsideGraph = UIUtils.CurrentWindow.OutsideGraph;
-				if( outsideGraph.SamplingMacros && !outsideGraph.IsStandardSurface )
+				if( outsideGraph.SamplingMacros /*&& !outsideGraph.IsStandardSurface*/ )
 				{
 					if( outsideGraph.IsSRP )
 						varType = string.Format( m_precisionWirePortToSRPMacroType[ type ], m_precisionTypeToCg[ precisionType ] );
@@ -1993,6 +2028,15 @@ namespace AmplifyShaderEditor
 			for( int i = 0; i < Constants.AttrInvalidChars.Length; i++ )
 			{
 				originalString = originalString.Replace( Constants.AttrInvalidChars[ i ], string.Empty );
+			}
+			return originalString;
+		}
+
+		public static string RemoveHeaderAttrCharacters( string originalString )
+		{
+			for( int i = 0; i < Constants.AttrInvalidChars.Length; i++ )
+			{
+				originalString = originalString.Replace( Constants.HeaderInvalidChars[ i ], string.Empty );
 			}
 			return originalString;
 		}
@@ -2972,23 +3016,56 @@ namespace AmplifyShaderEditor
 			return false;
 		}
 
-		public static int GetKeywordId( string keyword )
+		public static int GetKeywordId( string keyword, TemplateSRPType type = TemplateSRPType.BuiltIn)
 		{
-			if( AvailableKeywordsDict.Count != AvailableKeywords.Length )
+			switch( type )
 			{
-				AvailableKeywordsDict.Clear();
-				for( int i = 1; i < AvailableKeywords.Length; i++ )
+				default:
+				case TemplateSRPType.BuiltIn:
 				{
-					AvailableKeywordsDict.Add( AvailableKeywords[ i ], i );
+					if( AvailableKeywordsDict.Count != AvailableKeywords.Length )
+					{
+						AvailableKeywordsDict.Clear();
+						for( int i = 1; i < AvailableKeywords.Length; i++ )
+						{
+							AvailableKeywordsDict.Add( AvailableKeywords[ i ], i );
+						}
+					}
+
+					if( AvailableKeywordsDict.ContainsKey( keyword ) )
+					{
+						return AvailableKeywordsDict[ keyword ];
+					}
 				}
+				break;
+				case TemplateSRPType.HD:
+				case TemplateSRPType.Lightweight:
+				{
+					if( AvailableURPKeywordsDict.Count != AvailableURPKeywords.Length )
+					{
+						AvailableURPKeywordsDict.Clear();
+						for( int i = 1; i < AvailableURPKeywords.Length; i++ )
+						{
+							AvailableURPKeywordsDict.Add( AvailableURPKeywords[ i ], i );
+						}
+					}
+
+					if( AvailableURPKeywordsDict.ContainsKey( keyword ) )
+					{
+						return AvailableURPKeywordsDict[ keyword ];
+					}
+				}
+				break;
 			}
 
-			if( AvailableKeywordsDict.ContainsKey( keyword ) )
-			{
-				return AvailableKeywordsDict[ keyword ];
-			}
 
 			return 0;
+		}
+		public static string ForceLFLineEnding( string body )
+		{
+			body = body.Replace( "\r\n", "\n" );
+			body = body.Replace( "\r", "\n" );
+			return body;
 		}
 	}
 }
