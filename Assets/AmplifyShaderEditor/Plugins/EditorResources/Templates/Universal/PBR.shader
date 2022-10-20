@@ -1,20 +1,8 @@
-// Made with Amplify Shader Editor
-// Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "Polyart/Dreamscape Foliage Billboard"
+Shader /*ase_name*/ "Hidden/Universal/PBR" /*end*/
 {
 	Properties
 	{
-		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
-		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
-		[ASEBegin]_FoliageTexture("Foliage Texture", 2D) = "white" {}
-		_NormalTexture("Normal Texture", 2D) = "white" {}
-		_ColorTop("Color Top", Color) = (0,0,0,0)
-		_ColorBottom("Color Bottom", Color) = (0,0,0,0)
-		_ColorBottomLevel("Color Bottom Level", Float) = 0
-		_ColorBottomMaskFade("Color Bottom Mask Fade", Float) = 0
-		[ASEEnd]_AlphaClip("Alpha Clip", Float) = 0.5
-		[HideInInspector] _texcoord( "", 2D ) = "white" {}
-
+		/*ase_props*/
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
 		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
 		//_TransNormal( "Trans Normal Distortion", Range( 0, 1 ) ) = 0.5
@@ -32,12 +20,243 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 	SubShader
 	{
-		LOD 0
+		/*ase_subshader_options:Name=Additional Options
+			Option:Workflow:Specular,Metallic:Metallic
+				Specular:SetDefine:_SPECULAR_SETUP 1
+				Specular:ShowPort:Forward:Specular
+				Specular:HidePort:Forward:Metallic
+				Metallic:RemoveDefine:_SPECULAR_SETUP 1
+				Metallic:ShowPort:Forward:Metallic
+				Metallic:HidePort:Forward:Specular
+			Option:Surface:Opaque,Transparent:Opaque
+				Opaque:SetPropertyOnSubShader:RenderType,Opaque
+				Opaque:SetPropertyOnSubShader:RenderQueue,Geometry
+				Opaque:SetPropertyOnPass:Forward:ZWrite,On
+				Opaque:HideOption:  Refraction Model
+				Opaque:HideOption:  Blend
+				Transparent:SetPropertyOnSubShader:RenderType,Transparent
+				Transparent:SetPropertyOnSubShader:RenderQueue,Transparent
+				Transparent:SetPropertyOnPass:Forward:ZWrite,Off
+				Transparent:ShowOption:  Refraction Model
+				Transparent:ShowOption:  Blend
+			Option:  Refraction Model:None,Legacy:None
+				None,disable:HidePort:Forward:Refraction Index
+				None,disable:HidePort:Forward:Refraction Color
+				None,disable:RemoveDefine:_REFRACTION_ASE 1
+				None,disable:RemoveDefine:REQUIRE_OPAQUE_TEXTURE 1
+				None,disable:RemoveDefine:ASE_NEEDS_FRAG_SCREEN_POSITION
+				Legacy:ShowPort:Forward:Refraction Index
+				Legacy:ShowPort:Forward:Refraction Color
+				Legacy:SetDefine:_REFRACTION_ASE 1
+				Legacy:SetDefine:REQUIRE_OPAQUE_TEXTURE 1
+				Legacy:SetDefine:ASE_NEEDS_FRAG_SCREEN_POSITION
+			Option:  Blend:Alpha,Premultiply,Additive,Multiply:Alpha
+				Alpha:SetPropertyOnPass:Forward:BlendRGB,SrcAlpha,OneMinusSrcAlpha
+				Premultiply:SetPropertyOnPass:Forward:BlendRGB,One,OneMinusSrcAlpha
+				Additive:SetPropertyOnPass:Forward:BlendRGB,One,One
+				Multiply:SetPropertyOnPass:Forward:BlendRGB,DstColor,Zero
+				Alpha,Premultiply,Additive:SetPropertyOnPass:Forward:BlendAlpha,One,OneMinusSrcAlpha
+				Multiply:SetPropertyOnPass:Forward:BlendAlpha,One,Zero
+				Premultiply:SetDefine:_ALPHAPREMULTIPLY_ON 1
+				Alpha,Additive,Multiply,disable:RemoveDefine:_ALPHAPREMULTIPLY_ON 1
+				disable:SetPropertyOnPass:Forward:BlendRGB,One,Zero
+				disable:SetPropertyOnPass:Forward:BlendAlpha,One,Zero
+			Option:Two Sided:On,Cull Back,Cull Front:Cull Back
+				On:SetPropertyOnSubShader:CullMode,Off
+				Cull Back:SetPropertyOnSubShader:CullMode,Back
+				Cull Front:SetPropertyOnSubShader:CullMode,Front
+			Option:Fragment Normal Space,InvertActionOnDeselection:Tangent,Object,World:Tangent
+				Tangent:SetDefine:_NORMAL_DROPOFF_TS 1
+				Tangent:SetPortName:Forward:1,Normal
+				Object:SetDefine:_NORMAL_DROPOFF_OS 1
+				Object:SetPortName:Forward:1,Object Normal
+				World:SetDefine:_NORMAL_DROPOFF_WS 1
+				World:SetPortName:Forward:1,World Normal
+			Option:Transmission:false,true:false
+				false:RemoveDefine:_TRANSMISSION_ASE 1
+				false:HidePort:Forward:Transmission
+				false:HideOption:  Transmission Shadow
+				true:SetDefine:_TRANSMISSION_ASE 1
+				true:ShowPort:Forward:Transmission
+				true:ShowOption:  Transmission Shadow
+			Field:  Transmission Shadow:Float:0.5:0:1:_TransmissionShadow
+				Change:SetMaterialProperty:_TransmissionShadow
+				Change:SetShaderProperty:_TransmissionShadow,_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransmissionShadow,//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
+			Option:Translucency:false,true:false
+				false:RemoveDefine:_TRANSLUCENCY_ASE 1
+				false:HidePort:Forward:Translucency
+				false:HideOption:  Translucency Strength
+				false:HideOption:  Normal Distortion
+				false:HideOption:  Scattering
+				false:HideOption:  Direct
+				false:HideOption:  Ambient
+				false:HideOption:  Shadow
+				true:SetDefine:_TRANSLUCENCY_ASE 1
+				true:ShowPort:Forward:Translucency
+				true:ShowOption:  Translucency Strength
+				true:ShowOption:  Normal Distortion
+				true:ShowOption:  Scattering
+				true:ShowOption:  Direct
+				true:ShowOption:  Ambient
+				true:ShowOption:  Shadow
+			Field:  Translucency Strength:Float:1:0:50:_TransStrength
+				Change:SetMaterialProperty:_TransStrength
+				Change:SetShaderProperty:_TransStrength,_TransStrength( "Strength", Range( 0, 50 ) ) = 1
+				Inline,disable:SetShaderProperty:_TransStrength,//_TransStrength( "Strength", Range( 0, 50 ) ) = 1
+			Field:  Normal Distortion:Float:0.5:0:1:_TransNormal
+				Change:SetMaterialProperty:_TransNormal
+				Change:SetShaderProperty:_TransNormal,_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransNormal,//_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
+			Field:  Scattering:Float:2:1:50:_TransScattering
+				Change:SetMaterialProperty:_TransScattering
+				Change:SetShaderProperty:_TransScattering,_TransScattering( "Scattering", Range( 1, 50 ) ) = 2
+				Inline,disable:SetShaderProperty:_TransScattering,//_TransScattering( "Scattering", Range( 1, 50 ) ) = 2
+			Field:  Direct:Float:0.9:0:1:_TransDirect
+				Change:SetMaterialProperty:_TransDirect
+				Change:SetShaderProperty:_TransDirect,_TransDirect( "Direct", Range( 0, 1 ) ) = 0.9
+				Inline,disable:SetShaderProperty:_TransDirect,//_TransDirect( "Direct", Range( 0, 1 ) ) = 0.9
+			Field:  Ambient:Float:0.1:0:1:_TransAmbient
+				Change:SetMaterialProperty:_TransAmbient
+				Change:SetShaderProperty:_TransAmbient,_TransAmbient( "Ambient", Range( 0, 1 ) ) = 0.1
+				Inline,disable:SetShaderProperty:_TransAmbient,//_TransAmbient( "Ambient", Range( 0, 1 ) ) = 0.1
+			Field:  Shadow:Float:0.5:0:1:_TransShadow
+				Change:SetMaterialProperty:_TransShadow
+				Change:SetShaderProperty:_TransShadow,_TransShadow( "Shadow", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransShadow,//_TransShadow( "Shadow", Range( 0, 1 ) ) = 0.5
+			Option:Cast Shadows:false,true:true
+				true:IncludePass:ShadowCaster
+				false,disable:ExcludePass:ShadowCaster
+				true:ShowOption:  Use Shadow Threshold
+				false:HideOption:  Use Shadow Threshold
+			Option:  Use Shadow Threshold:false,true:false
+				true:SetDefine:_ALPHATEST_SHADOW_ON 1
+				true:ShowPort:Forward:Alpha Clip Threshold Shadow
+				false,disable:RemoveDefine:_ALPHATEST_SHADOW_ON 1
+				false,disable:HidePort:Forward:Alpha Clip Threshold Shadow
+			Option:Receive Shadows:false,true:true
+				true:RemoveDefine:_RECEIVE_SHADOWS_OFF 1
+				false:SetDefine:_RECEIVE_SHADOWS_OFF 1
+			Option:GPU Instancing:false,true:true
+				true:SetDefine:pragma multi_compile_instancing
+				false:RemoveDefine:pragma multi_compile_instancing
+			Option:LOD CrossFade:false,true:true
+				true:SetDefine:pragma multi_compile _ LOD_FADE_CROSSFADE
+				false:RemoveDefine:pragma multi_compile _ LOD_FADE_CROSSFADE
+			Option:Built-in Fog:false,true:true
+				true:SetDefine:pragma multi_compile_fog
+				false:RemoveDefine:pragma multi_compile_fog
+				true:SetDefine:ASE_FOG 1
+				false:RemoveDefine:ASE_FOG 1
+			Option,_FinalColorxAlpha:Final Color x Alpha:true,false:false
+				true:SetDefine:ASE_FINAL_COLOR_ALPHA_MULTIPLY 1
+				false:RemoveDefine:ASE_FINAL_COLOR_ALPHA_MULTIPLY 1
+			Option:Meta Pass:false,true:true
+				true:IncludePass:Meta
+				false,disable:ExcludePass:Meta
+			Option:Override Baked GI:false,true:false
+				true:ShowPort:Forward:Baked GI
+				false:HidePort:Forward:Baked GI
+			Option:Extra Pre Pass:false,true:false
+				true:IncludePass:ExtraPrePass
+				false,disable:ExcludePass:ExtraPrePass
+			Option:DOTS Instancing:false,true:false
+				true:SetDefine:pragma multi_compile _ DOTS_INSTANCING_ON
+				false:RemoveDefine:pragma multi_compile _ DOTS_INSTANCING_ON
+			Option:Tessellation:false,true:false
+				true:SetDefine:TESSELLATION_ON 1
+				true:SetDefine:pragma require tessellation tessHW
+				true:SetDefine:pragma hull HullFunction
+				true:SetDefine:pragma domain DomainFunction
+				true:ShowOption:  Phong
+				true:ShowOption:  Type
+				false,disable:RemoveDefine:TESSELLATION_ON 1
+				false,disable:RemoveDefine:pragma require tessellation tessHW
+				false,disable:RemoveDefine:pragma hull HullFunction
+				false,disable:RemoveDefine:pragma domain DomainFunction
+				false,disable:HideOption:  Phong
+				false,disable:HideOption:  Type
+			Option:  Phong:false,true:false
+				true:SetDefine:ASE_PHONG_TESSELLATION
+				false,disable:RemoveDefine:ASE_PHONG_TESSELLATION
+				true:ShowOption:  Strength
+				false,disable:HideOption:  Strength
+			Field:  Strength:Float:0.5:0:1:_TessPhongStrength
+				Change:SetMaterialProperty:_TessPhongStrength
+				Change:SetShaderProperty:_TessPhongStrength,_TessPhongStrength( "Phong Tess Strength", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TessPhongStrength,//_TessPhongStrength( "Phong Tess Strength", Range( 0, 1 ) ) = 0.5
+			Option:  Type:Fixed,Distance Based,Edge Length,Edge Length Cull:Fixed
+				Fixed:SetDefine:ASE_FIXED_TESSELLATION
+				Fixed,Distance Based:ShowOption:  Tess
+				Distance Based:SetDefine:ASE_DISTANCE_TESSELLATION
+				Distance Based:ShowOption:  Min
+				Distance Based:ShowOption:  Max
+				Edge Length:SetDefine:ASE_LENGTH_TESSELLATION
+				Edge Length,Edge Length Cull:ShowOption:  Edge Length
+				Edge Length Cull:SetDefine:ASE_LENGTH_CULL_TESSELLATION
+				Edge Length Cull:ShowOption:  Max Displacement
+				disable,Distance Based,Edge Length,Edge Length Cull:RemoveDefine:ASE_FIXED_TESSELLATION
+				disable,Fixed,Edge Length,Edge Length Cull:RemoveDefine:ASE_DISTANCE_TESSELLATION
+				disable,Fixed,Distance Based,Edge Length Cull:RemoveDefine:ASE_LENGTH_TESSELLATION
+				disable,Fixed,Distance Based,Edge Length:RemoveDefine:ASE_LENGTH_CULL_TESSELLATION
+				disable,Edge Length,Edge Length Cull:HideOption:  Tess
+				disable,Fixed,Edge Length,Edge Length Cull:HideOption:  Min
+				disable,Fixed,Edge Length,Edge Length Cull:HideOption:  Max
+				disable,Fixed,Distance Based:HideOption:  Edge Length
+				disable,Fixed,Distance Based,Edge Length:HideOption:  Max Displacement
+			Field:  Tess:Float:16:1:32:_TessValue
+				Change:SetMaterialProperty:_TessValue
+				Change:SetShaderProperty:_TessValue,_TessValue( "Max Tessellation", Range( 1, 32 ) ) = 16
+				Inline,disable:SetShaderProperty:_TessValue,//_TessValue( "Max Tessellation", Range( 1, 32 ) ) = 16
+			Field:  Min:Float:10:_TessMin
+				Change:SetMaterialProperty:_TessMin
+				Change:SetShaderProperty:_TessMin,_TessMin( "Tess Min Distance", Float ) = 10
+				Inline,disable:SetShaderProperty:_TessMin,//_TessMin( "Tess Min Distance", Float ) = 10
+			Field:  Max:Float:25:_TessMax
+				Change:SetMaterialProperty:_TessMax
+				Change:SetShaderProperty:_TessMax,_TessMax( "Tess Max Distance", Float ) = 25
+				Inline,disable:SetShaderProperty:_TessMax,//_TessMax( "Tess Max Distance", Float ) = 25
+			Field:  Edge Length:Float:16:2:50:_TessEdgeLength
+				Change:SetMaterialProperty:_TessEdgeLength
+				Change:SetShaderProperty:_TessEdgeLength,_TessEdgeLength ( "Edge length", Range( 2, 50 ) ) = 16
+				Inline,disable:SetShaderProperty:_TessEdgeLength,//_TessEdgeLength ( "Edge length", Range( 2, 50 ) ) = 16
+			Field:  Max Displacement:Float:25:_TessMaxDisp
+				Change:SetMaterialProperty:_TessMaxDisp
+				Change:SetShaderProperty:_TessMaxDisp,_TessMaxDisp( "Max Displacement", Float ) = 25
+				Inline,disable:SetShaderProperty:_TessMaxDisp,//_TessMaxDisp( "Max Displacement", Float ) = 25
+			Option:Write Depth:false,true:false
+				true:SetDefine:ASE_DEPTH_WRITE_ON
+				true:ShowOption:  Early Z
+				true:ShowPort:Forward:Depth Value
+				false,disable:RemoveDefine:ASE_DEPTH_WRITE_ON
+				false,disable:HideOption:  Early Z
+				false,disable:HidePort:Forward:Depth Value
+			Option:  Early Z:false,true:false
+				true:SetDefine:ASE_EARLY_Z_DEPTH_OPTIMIZE
+				false,disable:RemoveDefine:ASE_EARLY_Z_DEPTH_OPTIMIZE
+			Option:Vertex Position,InvertActionOnDeselection:Absolute,Relative:Relative
+				Absolute:SetDefine:ASE_ABSOLUTE_VERTEX_POS 1
+				Absolute:SetPortName:Forward:8,Vertex Position
+				Relative:SetPortName:Forward:8,Vertex Offset
+				Absolute:SetPortName:ExtraPrePass:3,Vertex Position
+				Relative:SetPortName:ExtraPrePass:3,Vertex Offset
+			Port:Forward:Emission
+				On:SetDefine:_EMISSION
+			Port:Forward:Baked GI
+				On:SetDefine:_ASE_BAKEDGI 1
+			Port:Forward:Alpha Clip Threshold
+				On:SetDefine:_ALPHATEST_ON 1
+			Port:Forward:Normal
+				On:SetDefine:_NORMALMAP 1
+		*/
 
-		
-
-		Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
-		Cull Off
+		Tags
+		{
+			"RenderPipeline" = "UniversalPipeline"
+			"RenderType"="Opaque"
+			"Queue"="Geometry+0" 
+		}
+		Cull Back
 		AlphaToMask Off
 		HLSLINCLUDE
 		#pragma target 2.0
@@ -146,30 +365,263 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 		ENDHLSL
 
-		
+		/*ase_pass*/
 		Pass
 		{
+			Name "ExtraPrePass"
+			Tags{ }
 			
-			Name "Forward"
-			Tags { "LightMode"="UniversalForward" }
-			
-			Blend One Zero, One Zero
+			Blend One Zero
+			Cull Back
 			ZWrite On
 			ZTest LEqual
-			Offset 0 , 0
+			Offset 0,0
 			ColorMask RGBA
-			
+			/*ase_stencil*/
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
+			#pragma prefer_hlslcc gles
+			#pragma exclude_renderers d3d11_9x
 
+			#pragma vertex vert
+			#pragma fragment frag
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+
+			#if ASE_SRP_VERSION <= 70108
+			#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
+			#endif
+
+			/*ase_pragma*/
+
+			struct VertexInput
+			{
+				float4 vertex : POSITION;
+				float3 ase_normal : NORMAL;
+				/*ase_vdata:p=p;n=n*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct VertexOutput
+			{
+				float4 clipPos : SV_POSITION;
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				float3 worldPos : TEXCOORD0;
+				#endif
+				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+				float4 shadowCoord : TEXCOORD1;
+				#endif
+				#ifdef ASE_FOG
+				float fogFactor : TEXCOORD2;
+				#endif
+				/*ase_interp(3,):sp=sp;wp=tc0;sc=tc1*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
+			};
+
+			CBUFFER_START(UnityPerMaterial)
+			#ifdef _TRANSMISSION_ASE
+				float _TransmissionShadow;
+			#endif
+			#ifdef _TRANSLUCENCY_ASE
+				float _TransStrength;
+				float _TransNormal;
+				float _TransScattering;
+				float _TransDirect;
+				float _TransAmbient;
+				float _TransShadow;
+			#endif
+			#ifdef TESSELLATION_ON
+				float _TessPhongStrength;
+				float _TessValue;
+				float _TessMin;
+				float _TessMax;
+				float _TessEdgeLength;
+				float _TessMaxDisp;
+			#endif
+			CBUFFER_END
+			/*ase_globals*/
+
+			/*ase_funcs*/
+
+			VertexOutput VertexFunction ( VertexInput v /*ase_vert_input*/ )
+			{
+				VertexOutput o = (VertexOutput)0;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
+				#ifdef ASE_ABSOLUTE_VERTEX_POS
+					float3 defaultVertexValue = v.vertex.xyz;
+				#else
+					float3 defaultVertexValue = float3(0, 0, 0);
+				#endif
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;3;-1;_VertexP*/defaultVertexValue/*end*/;
+				#ifdef ASE_ABSOLUTE_VERTEX_POS
+					v.vertex.xyz = vertexValue;
+				#else
+					v.vertex.xyz += vertexValue;
+				#endif
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;4;-1;_NormalP*/v.ase_normal/*end*/;
+
+				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+				float4 positionCS = TransformWorldToHClip( positionWS );
+
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				o.worldPos = positionWS;
+				#endif
+				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+				vertexInput.positionWS = positionWS;
+				vertexInput.positionCS = positionCS;
+				o.shadowCoord = GetShadowCoord( vertexInput );
+				#endif
+				#ifdef ASE_FOG
+				o.fogFactor = ComputeFogFactor( positionCS.z );
+				#endif
+				o.clipPos = positionCS;
+				return o;
+			}
+
+			#if defined(TESSELLATION_ON)
+			struct VertexControl
+			{
+				float4 vertex : INTERNALTESSPOS;
+				float3 ase_normal : NORMAL;
+				/*ase_vcontrol*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct TessellationFactors
+			{
+				float edge[3] : SV_TessFactor;
+				float inside : SV_InsideTessFactor;
+			};
+
+			VertexControl vert ( VertexInput v )
+			{
+				VertexControl o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				o.vertex = v.vertex;
+				o.ase_normal = v.ase_normal;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
+				return o;
+			}
+
+			TessellationFactors TessellationFunction (InputPatch<VertexControl,3> v)
+			{
+				TessellationFactors o;
+				float4 tf = 1;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
+				#if defined(ASE_FIXED_TESSELLATION)
+				tf = FixedTess( tessValue );
+				#elif defined(ASE_DISTANCE_TESSELLATION)
+				tf = DistanceBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, tessValue, tessMin, tessMax, GetObjectToWorldMatrix(), _WorldSpaceCameraPos );
+				#elif defined(ASE_LENGTH_TESSELLATION)
+				tf = EdgeLengthBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams );
+				#elif defined(ASE_LENGTH_CULL_TESSELLATION)
+				tf = EdgeLengthBasedTessCull(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, tessMaxDisp, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams, unity_CameraWorldClipPlanes );
+				#endif
+				o.edge[0] = tf.x; o.edge[1] = tf.y; o.edge[2] = tf.z; o.inside = tf.w;
+				return o;
+			}
+
+			[domain("tri")]
+			[partitioning("fractional_odd")]
+			[outputtopology("triangle_cw")]
+			[patchconstantfunc("TessellationFunction")]
+			[outputcontrolpoints(3)]
+			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
+			{
+			   return patch[id];
+			}
+
+			[domain("tri")]
+			VertexOutput DomainFunction(TessellationFactors factors, OutputPatch<VertexControl, 3> patch, float3 bary : SV_DomainLocation)
+			{
+				VertexInput o = (VertexInput) 0;
+				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
+				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
+				#if defined(ASE_PHONG_TESSELLATION)
+				float3 pp[3];
+				for (int i = 0; i < 3; ++i)
+					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
+				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
+				#endif
+				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
+				return VertexFunction(o);
+			}
+			#else
+			VertexOutput vert ( VertexInput v )
+			{
+				return VertexFunction( v );
+			}
+			#endif
+
+			half4 frag ( VertexOutput IN /*ase_frag_input*/ ) : SV_Target
+			{
+				UNITY_SETUP_INSTANCE_ID( IN );
+				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
+
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
+				#endif
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
+				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
+						ShadowCoords = IN.shadowCoord;
+					#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+						ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
+					#endif
+				#endif
+				/*ase_frag_code:IN=VertexOutput*/
+				float3 Color = /*ase_frag_out:Color;Float3;0;-1;_ColorP*/float3( 0, 0, 0 )/*end*/;
+				float Alpha = /*ase_frag_out:Alpha;Float;1;-1;_AlphaP*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;2;-1;_AlphaClipP*/0.5/*end*/;
+
+				#ifdef _ALPHATEST_ON
+					clip( Alpha - AlphaClipThreshold );
+				#endif
+
+				#ifdef ASE_FOG
+					Color = MixFog( Color, IN.fogFactor );
+				#endif
+
+				#ifdef LOD_FADE_CROSSFADE
+					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
+				#endif
+
+				return half4( Color, Alpha );
+			}
+
+			ENDHLSL
+		}
+
+		/*ase_pass*/
+		Pass
+		{
+			/*ase_main_pass*/
+			Name "Forward"
+			Tags{"LightMode" = "UniversalForward"}
+			
+			Blend One Zero
+			ZWrite On
+			ZTest LEqual
+			Offset 0,0
+			ColorMask RGBA
+			/*ase_stencil*/
+
+			HLSLPROGRAM
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
@@ -206,9 +658,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			struct VertexInput
 			{
@@ -217,7 +667,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float4 ase_tangent : TANGENT;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
-				
+				/*ase_vdata:p=p;n=n;t=t;uv0=tc0;uv1=tc1.xyzw*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -235,20 +685,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
 				float4 screenPos : TEXCOORD6;
 				#endif
-				float4 ase_texcoord7 : TEXCOORD7;
-				float4 ase_texcoord8 : TEXCOORD8;
+				/*ase_interp(7,):sp=sp;sc=tc2;wn.xyz=tc3.xyz;wt.xyz=tc4.xyz;wbt.xyz=tc5.xyz;wp.x=tc3.w;wp.y=tc4.w;wp.z=tc5.w;spu=tc6*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -269,46 +711,30 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
-			sampler2D _NormalTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord7 = v.vertex;
-				o.ase_texcoord8.xy = v.texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord8.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;8;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;10;-1;_Normal*/v.ase_normal/*end*/;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -358,7 +784,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float4 ase_tangent : TANGENT;
 				float4 texcoord : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
-				
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -378,7 +804,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_tangent = v.ase_tangent;
 				o.texcoord = v.texcoord;
 				o.texcoord1 = v.texcoord1;
-				
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -386,8 +812,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -420,12 +846,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_tangent = patch[0].ase_tangent * bary.x + patch[1].ase_tangent * bary.y + patch[2].ase_tangent * bary.z;
 				o.texcoord = patch[0].texcoord * bary.x + patch[1].texcoord * bary.y + patch[2].texcoord * bary.z;
 				o.texcoord1 = patch[0].texcoord1 * bary.x + patch[1].texcoord1 * bary.y + patch[2].texcoord1 * bary.z;
-				
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -448,7 +874,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
-						 ) : SV_Target
+						/*ase_frag_input*/ ) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
@@ -463,15 +889,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					float3 WorldTangent = -cross(GetObjectToWorldMatrix()._13_23_33, WorldNormal);
 					float3 WorldBiTangent = cross(WorldNormal, -WorldTangent);
 				#else
-					float3 WorldNormal = normalize( IN.tSpace0.xyz );
-					float3 WorldTangent = IN.tSpace1.xyz;
-					float3 WorldBiTangent = IN.tSpace2.xyz;
+					/*ase_local_var:wn*/float3 WorldNormal = normalize( IN.tSpace0.xyz );
+					/*ase_local_var:wt*/float3 WorldTangent = IN.tSpace1.xyz;
+					/*ase_local_var:wbt*/float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
-				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
-				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:wp*/float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
+				/*ase_local_var:wvd*/float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+				/*ase_local_var:spu*/float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -482,29 +908,24 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float4 lerpResult11 = lerp( _ColorTop , _ColorBottom , saturate( ( ( IN.ase_texcoord7.xyz.y + _ColorBottomLevel ) * ( _ColorBottomMaskFade * 2 ) ) ));
-				float2 uv_FoliageTexture = IN.ase_texcoord8.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
-				
-				float2 uv_NormalTexture = IN.ase_texcoord8.xy * _NormalTexture_ST.xy + _NormalTexture_ST.zw;
-				
-				float3 Albedo = ( lerpResult11 * tex2DNode12 ).rgb;
-				float3 Normal = UnpackNormalScale( tex2D( _NormalTexture, uv_NormalTexture ), 1.0 );
-				float3 Emission = 0;
-				float3 Specular = 0.5;
-				float Metallic = 0;
-				float Smoothness = 0.0;
-				float Occlusion = 1;
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
-				float AlphaClipThresholdShadow = 0.5;
-				float3 BakedGI = 0;
-				float3 RefractionColor = 1;
-				float RefractionIndex = 1;
-				float3 Transmission = 1;
-				float3 Translucency = 1;
+				/*ase_frag_code:IN=VertexOutput*/
+				float3 Albedo = /*ase_frag_out:Albedo;Float3;0;-1;_Albedo*/float3(0.5, 0.5, 0.5)/*end*/;
+				float3 Normal = /*ase_frag_out:Normal;Float3;1*/float3(0, 0, 1)/*end*/;
+				float3 Emission = /*ase_frag_out:Emission;Float3;2;-1;_Emission*/0/*end*/;
+				float3 Specular = /*ase_frag_out:Specular;Float3;9*/0.5/*end*/;
+				float Metallic = /*ase_frag_out:Metallic;Float;3*/0/*end*/;
+				float Smoothness = /*ase_frag_out:Smoothness;Float;4*/0.5/*end*/;
+				float Occlusion = /*ase_frag_out:Occlusion;Float;5*/1/*end*/;
+				float Alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;7;-1;_AlphaClip*/0.5/*end*/;
+				float AlphaClipThresholdShadow = /*ase_frag_out:Alpha Clip Threshold Shadow;Float;16;-1;_AlphaClipShadow*/0.5/*end*/;
+				float3 BakedGI = /*ase_frag_out:Baked GI;Float3;11;-1;_BakedGI*/0/*end*/;
+				float3 RefractionColor = /*ase_frag_out:Refraction Color;Float3;12;-1;_RefractionColor*/1/*end*/;
+				float RefractionIndex = /*ase_frag_out:Refraction Index;Float;13;-1;_RefractionIndex*/1/*end*/;
+				float3 Transmission = /*ase_frag_out:Transmission;Float3;14;-1;_Transmission*/1/*end*/;
+				float3 Translucency = /*ase_frag_out:Translucency;Float3;15;-1;_Translucency*/1/*end*/;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+				float DepthValue = /*ase_frag_out:Depth Value;Float;17;-1;_DepthValue*/0/*end*/;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -560,7 +981,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 				#ifdef _TRANSMISSION_ASE
 				{
-					float shadow = _TransmissionShadow;
+					float shadow = /*ase_inline_begin*/_TransmissionShadow/*ase_inline_end*/;
 
 					Light mainLight = GetMainLight( inputData.shadowCoord );
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
@@ -585,12 +1006,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 				#ifdef _TRANSLUCENCY_ASE
 				{
-					float shadow = _TransShadow;
-					float normal = _TransNormal;
-					float scattering = _TransScattering;
-					float direct = _TransDirect;
-					float ambient = _TransAmbient;
-					float strength = _TransStrength;
+					float shadow = /*ase_inline_begin*/_TransShadow/*ase_inline_end*/;
+					float normal = /*ase_inline_begin*/_TransNormal/*ase_inline_end*/;
+					float scattering = /*ase_inline_begin*/_TransScattering/*ase_inline_end*/;
+					float direct = /*ase_inline_begin*/_TransDirect/*ase_inline_end*/;
+					float ambient = /*ase_inline_begin*/_TransAmbient/*ase_inline_end*/;
+					float strength = /*ase_inline_begin*/_TransStrength/*ase_inline_end*/;
 
 					Light mainLight = GetMainLight( inputData.shadowCoord );
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
@@ -649,49 +1070,38 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			ENDHLSL
 		}
 
-		
+		/*ase_pass*/
 		Pass
 		{
-			
-			Name "DepthOnly"
-			Tags { "LightMode"="DepthOnly" }
+			/*ase_hide_pass*/
+			Name "ShadowCaster"
+			Tags{"LightMode" = "ShadowCaster"}
 
 			ZWrite On
-			ColorMask 0
+			ZTest LEqual
 			AlphaToMask Off
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
-
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#define SHADERPASS_DEPTHONLY
+			#define SHADERPASS_SHADOWCASTER
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			struct VertexInput
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
+				/*ase_vdata:p=p;n=n*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -704,19 +1114,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 				float4 shadowCoord : TEXCOORD1;
 				#endif
-				float4 ase_texcoord2 : TEXCOORD2;
+				/*ase_interp(2,):sp=sp;wp=tc0;sc=tc1*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -737,59 +1140,54 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			float3 _LightDirection;
+
+			VertexOutput VertexFunction( VertexInput v/*ase_vert_input*/ )
 			{
-				VertexOutput o = (VertexOutput)0;
+				VertexOutput o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord2.xy = v.ase_texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord2.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;2;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
-				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
-				float4 positionCS = TransformWorldToHClip( positionWS );
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;3;-1;_Normal*/v.ase_normal/*end*/;
 
+				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
 				o.worldPos = positionWS;
 				#endif
+				float3 normalWS = TransformObjectToWorldDir(v.ase_normal);
 
+				float4 clipPos = TransformWorldToHClip( ApplyShadowBias( positionWS, normalWS, _LightDirection ) );
+
+				#if UNITY_REVERSED_Z
+					clipPos.z = min(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+				#else
+					clipPos.z = max(clipPos.z, clipPos.w * UNITY_NEAR_CLIP_VALUE);
+				#endif
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
 					vertexInput.positionWS = positionWS;
-					vertexInput.positionCS = positionCS;
+					vertexInput.positionCS = clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
-				o.clipPos = positionCS;
+				o.clipPos = clipPos;
 				return o;
 			}
 
@@ -798,8 +1196,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
-
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -816,7 +1213,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -824,8 +1221,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -855,12 +1252,259 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
+				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
+				#endif
+				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
+				return VertexFunction(o);
+			}
+			#else
+			VertexOutput vert ( VertexInput v )
+			{
+				return VertexFunction( v );
+			}
+			#endif
+
+			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE)
+				#define ASE_SV_DEPTH SV_DepthLessEqual  
+			#else
+				#define ASE_SV_DEPTH SV_Depth
+			#endif
+
+			half4 frag(	VertexOutput IN 
+						#ifdef ASE_DEPTH_WRITE_ON
+						,out float outputDepth : ASE_SV_DEPTH
+						#endif
+						/*ase_frag_input*/ ) : SV_TARGET
+			{
+				UNITY_SETUP_INSTANCE_ID( IN );
+				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
+				
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
+				#endif
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
+
+				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
+						ShadowCoords = IN.shadowCoord;
+					#elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+						ShadowCoords = TransformWorldToShadowCoord( WorldPosition );
+					#endif
+				#endif
+
+				/*ase_frag_code:IN=VertexOutput*/
+				float Alpha = /*ase_frag_out:Alpha;Float;0;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;1;-1;_AlphaClip*/0.5/*end*/;
+				float AlphaClipThresholdShadow = /*ase_frag_out:Alpha Clip Threshold Shadow;Float;4;-1;_AlphaClipShadow*/0.5/*end*/;
+				#ifdef ASE_DEPTH_WRITE_ON
+				float DepthValue = /*ase_frag_out:Depth Value;Float;5;-1;_DepthValue*/0/*end*/;
+				#endif
+
+				#ifdef _ALPHATEST_ON
+					#ifdef _ALPHATEST_SHADOW_ON
+						clip(Alpha - AlphaClipThresholdShadow);
+					#else
+						clip(Alpha - AlphaClipThreshold);
+					#endif
+				#endif
+
+				#ifdef LOD_FADE_CROSSFADE
+					LODDitheringTransition( IN.clipPos.xyz, unity_LODFade.x );
+				#endif
+				#ifdef ASE_DEPTH_WRITE_ON
+					outputDepth = DepthValue;
+				#endif
+				return 0;
+			}
+
+			ENDHLSL
+		}
+
+		/*ase_pass*/
+		Pass
+		{
+			/*ase_hide_pass*/
+			Name "DepthOnly"
+			Tags{"LightMode" = "DepthOnly"}
+
+			ZWrite On
+			ColorMask 0
+			AlphaToMask Off
+
+			HLSLPROGRAM
+			#pragma prefer_hlslcc gles
+			#pragma exclude_renderers d3d11_9x
+
+			#pragma vertex vert
+			#pragma fragment frag
+
+			#define SHADERPASS_DEPTHONLY
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+
+			/*ase_pragma*/
+
+			struct VertexInput
+			{
+				float4 vertex : POSITION;
+				float3 ase_normal : NORMAL;
+				/*ase_vdata:p=p;n=n*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct VertexOutput
+			{
+				float4 clipPos : SV_POSITION;
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				float3 worldPos : TEXCOORD0;
+				#endif
+				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+				float4 shadowCoord : TEXCOORD1;
+				#endif
+				/*ase_interp(2,):sp=sp;wp=tc0;sc=tc1*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
+			};
+
+			CBUFFER_START(UnityPerMaterial)
+			#ifdef _TRANSMISSION_ASE
+				float _TransmissionShadow;
+			#endif
+			#ifdef _TRANSLUCENCY_ASE
+				float _TransStrength;
+				float _TransNormal;
+				float _TransScattering;
+				float _TransDirect;
+				float _TransAmbient;
+				float _TransShadow;
+			#endif
+			#ifdef TESSELLATION_ON
+				float _TessPhongStrength;
+				float _TessValue;
+				float _TessMin;
+				float _TessMax;
+				float _TessEdgeLength;
+				float _TessMaxDisp;
+			#endif
+			CBUFFER_END
+			/*ase_globals*/
+
+			/*ase_funcs*/
+
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
+			{
+				VertexOutput o = (VertexOutput)0;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
+				#ifdef ASE_ABSOLUTE_VERTEX_POS
+					float3 defaultVertexValue = v.vertex.xyz;
+				#else
+					float3 defaultVertexValue = float3(0, 0, 0);
+				#endif
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;2;-1;_Vertex*/defaultVertexValue/*end*/;
+				#ifdef ASE_ABSOLUTE_VERTEX_POS
+					v.vertex.xyz = vertexValue;
+				#else
+					v.vertex.xyz += vertexValue;
+				#endif
+
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;3;-1;_Normal*/v.ase_normal/*end*/;
+				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
+				float4 positionCS = TransformWorldToHClip( positionWS );
+
+				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
+				o.worldPos = positionWS;
+				#endif
+
+				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
+					VertexPositionInputs vertexInput = (VertexPositionInputs)0;
+					vertexInput.positionWS = positionWS;
+					vertexInput.positionCS = positionCS;
+					o.shadowCoord = GetShadowCoord( vertexInput );
+				#endif
+				o.clipPos = positionCS;
+				return o;
+			}
+
+			#if defined(TESSELLATION_ON)
+			struct VertexControl
+			{
+				float4 vertex : INTERNALTESSPOS;
+				float3 ase_normal : NORMAL;
+				/*ase_vcontrol*/
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+			};
+
+			struct TessellationFactors
+			{
+				float edge[3] : SV_TessFactor;
+				float inside : SV_InsideTessFactor;
+			};
+
+			VertexControl vert ( VertexInput v )
+			{
+				VertexControl o;
+				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_TRANSFER_INSTANCE_ID(v, o);
+				o.vertex = v.vertex;
+				o.ase_normal = v.ase_normal;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
+				return o;
+			}
+
+			TessellationFactors TessellationFunction (InputPatch<VertexControl,3> v)
+			{
+				TessellationFactors o;
+				float4 tf = 1;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
+				#if defined(ASE_FIXED_TESSELLATION)
+				tf = FixedTess( tessValue );
+				#elif defined(ASE_DISTANCE_TESSELLATION)
+				tf = DistanceBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, tessValue, tessMin, tessMax, GetObjectToWorldMatrix(), _WorldSpaceCameraPos );
+				#elif defined(ASE_LENGTH_TESSELLATION)
+				tf = EdgeLengthBasedTess(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams );
+				#elif defined(ASE_LENGTH_CULL_TESSELLATION)
+				tf = EdgeLengthBasedTessCull(v[0].vertex, v[1].vertex, v[2].vertex, edgeLength, tessMaxDisp, GetObjectToWorldMatrix(), _WorldSpaceCameraPos, _ScreenParams, unity_CameraWorldClipPlanes );
+				#endif
+				o.edge[0] = tf.x; o.edge[1] = tf.y; o.edge[2] = tf.z; o.inside = tf.w;
+				return o;
+			}
+
+			[domain("tri")]
+			[partitioning("fractional_odd")]
+			[outputtopology("triangle_cw")]
+			[patchconstantfunc("TessellationFunction")]
+			[outputcontrolpoints(3)]
+			VertexControl HullFunction(InputPatch<VertexControl, 3> patch, uint id : SV_OutputControlPointID)
+			{
+			   return patch[id];
+			}
+
+			[domain("tri")]
+			VertexOutput DomainFunction(TessellationFactors factors, OutputPatch<VertexControl, 3> patch, float3 bary : SV_DomainLocation)
+			{
+				VertexInput o = (VertexInput) 0;
+				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
+				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
+				#if defined(ASE_PHONG_TESSELLATION)
+				float3 pp[3];
+				for (int i = 0; i < 3; ++i)
+					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -882,15 +1526,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
-						 ) : SV_TARGET
+						/*ase_frag_input*/ ) : SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
 				#endif
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -900,13 +1544,11 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					#endif
 				#endif
 
-				float2 uv_FoliageTexture = IN.ase_texcoord2.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
-				
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
+				/*ase_frag_code:IN=VertexOutput*/
+				float Alpha = /*ase_frag_out:Alpha;Float;0;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;1;-1;_AlphaClip*/0.5/*end*/;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+				float DepthValue = /*ase_frag_out:Depth Value;Float;4;-1;_DepthValue*/0/*end*/;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -925,25 +1567,16 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			ENDHLSL
 		}
 		
-		
+		/*ase_pass*/
 		Pass
 		{
-			
+			/*ase_hide_pass*/
 			Name "Meta"
-			Tags { "LightMode"="Meta" }
+			Tags{"LightMode" = "Meta"}
 
 			Cull Off
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
-
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
@@ -957,9 +1590,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
@@ -969,7 +1600,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float3 ase_normal : NORMAL;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				float4 ase_texcoord : TEXCOORD0;
+				/*ase_vdata:p=p;n=n;uv1=tc1;uv2=tc2*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -982,20 +1613,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 				float4 shadowCoord : TEXCOORD1;
 				#endif
-				float4 ase_texcoord2 : TEXCOORD2;
-				float4 ase_texcoord3 : TEXCOORD3;
+				/*ase_interp(2,):sp=sp;wp=tc0;sc=tc1*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1016,47 +1639,32 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord2 = v.vertex;
-				o.ase_texcoord3.xy = v.ase_texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord3.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;4;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;5;-1;_Normal*/v.ase_normal/*end*/;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
@@ -1080,8 +1688,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float3 ase_normal : NORMAL;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				float4 ase_texcoord : TEXCOORD0;
-
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1100,7 +1707,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_normal = v.ase_normal;
 				o.texcoord1 = v.texcoord1;
 				o.texcoord2 = v.texcoord2;
-				o.ase_texcoord = v.ase_texcoord;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -1108,8 +1715,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -1141,12 +1748,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
 				o.texcoord1 = patch[0].texcoord1 * bary.x + patch[1].texcoord1 * bary.y + patch[2].texcoord1 * bary.z;
 				o.texcoord2 = patch[0].texcoord2 * bary.x + patch[1].texcoord2 * bary.y + patch[2].texcoord2 * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -1159,15 +1766,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			}
 			#endif
 
-			half4 frag(VertexOutput IN  ) : SV_TARGET
+			half4 frag(VertexOutput IN /*ase_frag_input*/ ) : SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
 				#endif
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -1177,15 +1784,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					#endif
 				#endif
 
-				float4 lerpResult11 = lerp( _ColorTop , _ColorBottom , saturate( ( ( IN.ase_texcoord2.xyz.y + _ColorBottomLevel ) * ( _ColorBottomMaskFade * 2 ) ) ));
-				float2 uv_FoliageTexture = IN.ase_texcoord3.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
+				/*ase_frag_code:IN=VertexOutput*/
 				
-				
-				float3 Albedo = ( lerpResult11 * tex2DNode12 ).rgb;
-				float3 Emission = 0;
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
+				float3 Albedo = /*ase_frag_out:Albedo;Float3;0;-1;_Albedo*/float3(0.5, 0.5, 0.5)/*end*/;
+				float3 Emission = /*ase_frag_out:Emission;Float3;1;-1;_Emission*/0/*end*/;
+				float Alpha = /*ase_frag_out:Alpha;Float;2;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;3;-1;_AlphaClip*/0.5/*end*/;
 
 				#ifdef _ALPHATEST_ON
 					clip(Alpha - AlphaClipThreshold);
@@ -1200,29 +1804,20 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			ENDHLSL
 		}
 
-		
+		/*ase_pass*/
 		Pass
 		{
-			
+			/*ase_hide_pass:SyncP*/
 			Name "Universal2D"
-			Tags { "LightMode"="Universal2D" }
+			Tags{"LightMode" = "Universal2D"}
 
-			Blend One Zero, One Zero
+			Blend One Zero
 			ZWrite On
 			ZTest LEqual
-			Offset 0 , 0
+			Offset 0,0
 			ColorMask RGBA
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
-
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
@@ -1237,9 +1832,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			#pragma shader_feature _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
@@ -1247,7 +1840,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
+				/*ase_vdata:p=p;n=n*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1260,20 +1853,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 				float4 shadowCoord : TEXCOORD1;
 				#endif
-				float4 ase_texcoord2 : TEXCOORD2;
-				float4 ase_texcoord3 : TEXCOORD3;
+				/*ase_interp(2,):sp=sp;wp=tc0;sc=tc1*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1294,47 +1879,32 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID( v );
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord2 = v.vertex;
-				o.ase_texcoord3.xy = v.ase_texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord3.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;3;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;4;-1;_Normal*/v.ase_normal/*end*/;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float4 positionCS = TransformWorldToHClip( positionWS );
@@ -1359,8 +1929,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
-
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1377,7 +1946,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -1385,8 +1954,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -1416,12 +1985,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -1434,15 +2003,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			}
 			#endif
 
-			half4 frag(VertexOutput IN  ) : SV_TARGET
+			half4 frag(VertexOutput IN /*ase_frag_input*/ ) : SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID( IN );
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
 				#endif
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -1452,14 +2021,11 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					#endif
 				#endif
 
-				float4 lerpResult11 = lerp( _ColorTop , _ColorBottom , saturate( ( ( IN.ase_texcoord2.xyz.y + _ColorBottomLevel ) * ( _ColorBottomMaskFade * 2 ) ) ));
-				float2 uv_FoliageTexture = IN.ase_texcoord3.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
+				/*ase_frag_code:IN=VertexOutput*/
 				
-				
-				float3 Albedo = ( lerpResult11 * tex2DNode12 ).rgb;
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
+				float3 Albedo = /*ase_frag_out:Albedo;Float3;0;-1;_Albedo*/float3(0.5, 0.5, 0.5)/*end*/;
+				float Alpha = /*ase_frag_out:Alpha;Float;1;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;2;-1;_AlphaClip*/0.5/*end*/;
 
 				half4 color = half4( Albedo, Alpha );
 
@@ -1472,12 +2038,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			ENDHLSL
 		}
 
-		
+		/*ase_pass*/
 		Pass
 		{
-			
+			/*ase_hide_pass*/
 			Name "DepthNormals"
-			Tags { "LightMode"="DepthNormals" }
+			Tags{"LightMode" = "DepthNormals"}
 
 			ZWrite On
 			Blend One Zero
@@ -1485,15 +2051,6 @@ Shader "Polyart/Dreamscape Foliage Billboard"
             ZWrite On
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
-
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
@@ -1507,15 +2064,13 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			struct VertexInput
 			{
 				float4 vertex : POSITION;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
+				/*ase_vdata:p=p;n=n*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1529,19 +2084,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float4 shadowCoord : TEXCOORD1;
 				#endif
 				float3 worldNormal : TEXCOORD2;
-				float4 ase_texcoord3 : TEXCOORD3;
+				/*ase_interp(3,):sp=sp;wp=tc0;sc=tc1;wn=tc2*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1562,45 +2110,31 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord3.xy = v.ase_texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord3.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;2;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
 
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;3;-1;_Normal*/v.ase_normal/*end*/;
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 normalWS = TransformObjectToWorldNormal( v.ase_normal );
 				float4 positionCS = TransformWorldToHClip( positionWS );
@@ -1626,8 +2160,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 ase_normal : NORMAL;
-				float4 ase_texcoord : TEXCOORD0;
-
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1644,7 +2177,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.vertex;
 				o.ase_normal = v.ase_normal;
-				o.ase_texcoord = v.ase_texcoord;
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -1652,8 +2185,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -1683,12 +2216,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				VertexInput o = (VertexInput) 0;
 				o.vertex = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.ase_normal = patch[0].ase_normal * bary.x + patch[1].ase_normal * bary.y + patch[2].ase_normal * bary.z;
-				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -1710,15 +2243,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 						#ifdef ASE_DEPTH_WRITE_ON
 						,out float outputDepth : ASE_SV_DEPTH
 						#endif
-						 ) : SV_TARGET
+						/*ase_frag_input*/ ) : SV_TARGET
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX( IN );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
-				float3 WorldPosition = IN.worldPos;
+				/*ase_local_var:wp*/float3 WorldPosition = IN.worldPos;
 				#endif
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 
 				#if defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -1728,13 +2261,11 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					#endif
 				#endif
 
-				float2 uv_FoliageTexture = IN.ase_texcoord3.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
-				
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
+				/*ase_frag_code:IN=VertexOutput*/
+				float Alpha = /*ase_frag_out:Alpha;Float;0;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;1;-1;_AlphaClip*/0.5/*end*/;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+				float DepthValue = /*ase_frag_out:Depth Value;Float;4;-1;_DepthValue*/0/*end*/;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -1754,30 +2285,21 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			ENDHLSL
 		}
 
-		
+		/*ase_pass*/
 		Pass
 		{
-			
+			/*ase_hide_pass:SyncP*/
 			Name "GBuffer"
-			Tags { "LightMode"="UniversalGBuffer" }
+			Tags{"LightMode" = "UniversalGBuffer"}
 			
-			Blend One Zero, One Zero
+			Blend One Zero
 			ZWrite On
 			ZTest LEqual
-			Offset 0 , 0
+			Offset 0,0
 			ColorMask RGBA
-			
+			/*ase_stencil*/
 
 			HLSLPROGRAM
-			#define _NORMAL_DROPOFF_TS 1
-			#pragma multi_compile_instancing
-			#pragma multi_compile _ LOD_FADE_CROSSFADE
-			#pragma multi_compile_fog
-			#define ASE_FOG 1
-			#define _ALPHATEST_ON 1
-			#define _NORMALMAP 1
-			#define ASE_SRP_VERSION 999999
-
 			#pragma prefer_hlslcc gles
 			#pragma exclude_renderers d3d11_9x
 
@@ -1812,9 +2334,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			    #define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_VERT_POSITION
-			#define ASE_NEEDS_VERT_NORMAL
-
+			/*ase_pragma*/
 
 			struct VertexInput
 			{
@@ -1823,7 +2343,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float4 ase_tangent : TANGENT;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord : TEXCOORD0;
-				
+				/*ase_vdata:p=p;n=n;t=t;uv0=tc0;uv1=tc1.xyzw*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1841,20 +2361,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
 				float4 screenPos : TEXCOORD6;
 				#endif
-				float4 ase_texcoord7 : TEXCOORD7;
-				float4 ase_texcoord8 : TEXCOORD8;
+				/*ase_interp(7,):sp=sp;sc=tc2;wn.xyz=tc3.xyz;wt.xyz=tc4.xyz;wbt.xyz=tc5.xyz;wp.x=tc3.w;wp.y=tc4.w;wp.z=tc5.w;spu=tc6*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _ColorTop;
-			float4 _ColorBottom;
-			float4 _FoliageTexture_ST;
-			float4 _NormalTexture_ST;
-			float _ColorBottomLevel;
-			float _ColorBottomMaskFade;
-			float _AlphaClip;
 			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
@@ -1875,45 +2387,30 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float _TessMaxDisp;
 			#endif
 			CBUFFER_END
-			sampler2D _FoliageTexture;
+			/*ase_globals*/
 
+			/*ase_funcs*/
 
-			
-			VertexOutput VertexFunction( VertexInput v  )
+			VertexOutput VertexFunction( VertexInput v /*ase_vert_input*/ )
 			{
 				VertexOutput o = (VertexOutput)0;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				//Calculate new billboard vertex position and normal;
-				float3 upCamVec = float3( 0, 1, 0 );
-				float3 forwardCamVec = -normalize ( UNITY_MATRIX_V._m20_m21_m22 );
-				float3 rightCamVec = normalize( UNITY_MATRIX_V._m00_m01_m02 );
-				float4x4 rotationCamMatrix = float4x4( rightCamVec, 0, upCamVec, 0, forwardCamVec, 0, 0, 0, 0, 1 );
-				v.ase_normal = normalize( mul( float4( v.ase_normal , 0 ), rotationCamMatrix )).xyz;
-				//This unfortunately must be made to take non-uniform scaling into account;
-				//Transform to world coords, apply rotation and transform back to local;
-				v.vertex = mul( v.vertex , unity_ObjectToWorld );
-				v.vertex = mul( v.vertex , rotationCamMatrix );
-				v.vertex = mul( v.vertex , unity_WorldToObject );
-				o.ase_texcoord7 = v.vertex;
-				o.ase_texcoord8.xy = v.texcoord.xy;
-				
-				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord8.zw = 0;
+				/*ase_vert_code:v=VertexInput;o=VertexOutput*/
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
 				#else
 					float3 defaultVertexValue = float3(0, 0, 0);
 				#endif
-				float3 vertexValue = 0;
+				float3 vertexValue = /*ase_vert_out:Vertex Offset;Float3;8;-1;_Vertex*/defaultVertexValue/*end*/;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					v.vertex.xyz = vertexValue;
 				#else
 					v.vertex.xyz += vertexValue;
 				#endif
-				v.ase_normal = v.ase_normal;
+				v.ase_normal = /*ase_vert_out:Vertex Normal;Float3;10;-1;_Normal*/v.ase_normal/*end*/;
 
 				float3 positionWS = TransformObjectToWorld( v.vertex.xyz );
 				float3 positionVS = TransformWorldToView( positionWS );
@@ -1963,7 +2460,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				float4 ase_tangent : TANGENT;
 				float4 texcoord : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
-				
+				/*ase_vcontrol*/
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1983,7 +2480,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_tangent = v.ase_tangent;
 				o.texcoord = v.texcoord;
 				o.texcoord1 = v.texcoord1;
-				
+				/*ase_control_code:v=VertexInput;o=VertexControl*/
 				return o;
 			}
 
@@ -1991,8 +2488,8 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 			{
 				TessellationFactors o;
 				float4 tf = 1;
-				float tessValue = _TessValue; float tessMin = _TessMin; float tessMax = _TessMax;
-				float edgeLength = _TessEdgeLength; float tessMaxDisp = _TessMaxDisp;
+				float tessValue = /*ase_inline_begin*/_TessValue/*ase_inline_end*/; float tessMin = /*ase_inline_begin*/_TessMin/*ase_inline_end*/; float tessMax = /*ase_inline_begin*/_TessMax/*ase_inline_end*/;
+				float edgeLength = /*ase_inline_begin*/_TessEdgeLength/*ase_inline_end*/; float tessMaxDisp = /*ase_inline_begin*/_TessMaxDisp/*ase_inline_end*/;
 				#if defined(ASE_FIXED_TESSELLATION)
 				tf = FixedTess( tessValue );
 				#elif defined(ASE_DISTANCE_TESSELLATION)
@@ -2025,12 +2522,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				o.ase_tangent = patch[0].ase_tangent * bary.x + patch[1].ase_tangent * bary.y + patch[2].ase_tangent * bary.z;
 				o.texcoord = patch[0].texcoord * bary.x + patch[1].texcoord * bary.y + patch[2].texcoord * bary.z;
 				o.texcoord1 = patch[0].texcoord1 * bary.x + patch[1].texcoord1 * bary.y + patch[2].texcoord1 * bary.z;
-				
+				/*ase_domain_code:patch=VertexControl;o=VertexInput;bary=SV_DomainLocation*/
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
 					pp[i] = o.vertex.xyz - patch[i].ase_normal * (dot(o.vertex.xyz, patch[i].ase_normal) - dot(patch[i].vertex.xyz, patch[i].ase_normal));
-				float phongStrength = _TessPhongStrength;
+				float phongStrength = /*ase_inline_begin*/_TessPhongStrength/*ase_inline_end*/;
 				o.vertex.xyz = phongStrength * (pp[0]*bary.x + pp[1]*bary.y + pp[2]*bary.z) + (1.0f-phongStrength) * o.vertex.xyz;
 				#endif
 				UNITY_TRANSFER_INSTANCE_ID(patch[0], o);
@@ -2052,7 +2549,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 								#ifdef ASE_DEPTH_WRITE_ON
 								,out float outputDepth : ASE_SV_DEPTH
 								#endif
-								 )
+								/*ase_frag_input*/ )
 			{
 				UNITY_SETUP_INSTANCE_ID(IN);
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
@@ -2067,15 +2564,15 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 					float3 WorldTangent = -cross(GetObjectToWorldMatrix()._13_23_33, WorldNormal);
 					float3 WorldBiTangent = cross(WorldNormal, -WorldTangent);
 				#else
-					float3 WorldNormal = normalize( IN.tSpace0.xyz );
-					float3 WorldTangent = IN.tSpace1.xyz;
-					float3 WorldBiTangent = IN.tSpace2.xyz;
+					/*ase_local_var:wn*/float3 WorldNormal = normalize( IN.tSpace0.xyz );
+					/*ase_local_var:wt*/float3 WorldTangent = IN.tSpace1.xyz;
+					/*ase_local_var:wbt*/float3 WorldBiTangent = IN.tSpace2.xyz;
 				#endif
-				float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
-				float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
-				float4 ShadowCoords = float4( 0, 0, 0, 0 );
+				/*ase_local_var:wp*/float3 WorldPosition = float3(IN.tSpace0.w,IN.tSpace1.w,IN.tSpace2.w);
+				/*ase_local_var:wvd*/float3 WorldViewDirection = _WorldSpaceCameraPos.xyz  - WorldPosition;
+				/*ase_local_var:sc*/float4 ShadowCoords = float4( 0, 0, 0, 0 );
 				#if defined(ASE_NEEDS_FRAG_SCREEN_POSITION)
-				float4 ScreenPos = IN.screenPos;
+				/*ase_local_var:spu*/float4 ScreenPos = IN.screenPos;
 				#endif
 
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -2086,27 +2583,24 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float4 lerpResult11 = lerp( _ColorTop , _ColorBottom , saturate( ( ( IN.ase_texcoord7.xyz.y + _ColorBottomLevel ) * ( _ColorBottomMaskFade * 2 ) ) ));
-				float2 uv_FoliageTexture = IN.ase_texcoord8.xy * _FoliageTexture_ST.xy + _FoliageTexture_ST.zw;
-				float4 tex2DNode12 = tex2D( _FoliageTexture, uv_FoliageTexture );
-				
-				float3 Albedo = ( lerpResult11 * tex2DNode12 ).rgb;
-				float3 Normal = float3(0, 0, 1);
-				float3 Emission = 0;
-				float3 Specular = 0.5;
-				float Metallic = 0;
-				float Smoothness = 0.5;
-				float Occlusion = 1;
-				float Alpha = tex2DNode12.a;
-				float AlphaClipThreshold = _AlphaClip;
-				float AlphaClipThresholdShadow = 0.5;
-				float3 BakedGI = 0;
-				float3 RefractionColor = 1;
-				float RefractionIndex = 1;
-				float3 Transmission = 1;
-				float3 Translucency = 1;
+				/*ase_frag_code:IN=VertexOutput*/
+				float3 Albedo = /*ase_frag_out:Albedo;Float3;0;-1;_Albedo*/float3(0.5, 0.5, 0.5)/*end*/;
+				float3 Normal = /*ase_frag_out:Normal;Float3;1*/float3(0, 0, 1)/*end*/;
+				float3 Emission = /*ase_frag_out:Emission;Float3;2;-1;_Emission*/0/*end*/;
+				float3 Specular = /*ase_frag_out:Specular;Float3;9*/0.5/*end*/;
+				float Metallic = /*ase_frag_out:Metallic;Float;3*/0/*end*/;
+				float Smoothness = /*ase_frag_out:Smoothness;Float;4*/0.5/*end*/;
+				float Occlusion = /*ase_frag_out:Occlusion;Float;5*/1/*end*/;
+				float Alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
+				float AlphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;7;-1;_AlphaClip*/0.5/*end*/;
+				float AlphaClipThresholdShadow = /*ase_frag_out:Alpha Clip Threshold Shadow;Float;16;-1;_AlphaClipShadow*/0.5/*end*/;
+				float3 BakedGI = /*ase_frag_out:Baked GI;Float3;11;-1;_BakedGI*/0/*end*/;
+				float3 RefractionColor = /*ase_frag_out:Refraction Color;Float3;12;-1;_RefractionColor*/1/*end*/;
+				float RefractionIndex = /*ase_frag_out:Refraction Index;Float;13;-1;_RefractionIndex*/1/*end*/;
+				float3 Transmission = /*ase_frag_out:Transmission;Float3;14;-1;_Transmission*/1/*end*/;
+				float3 Translucency = /*ase_frag_out:Translucency;Float3;15;-1;_Translucency*/1/*end*/;
 				#ifdef ASE_DEPTH_WRITE_ON
-				float DepthValue = 0;
+				float DepthValue = /*ase_frag_out:Depth Value;Float;17;-1;_DepthValue*/0/*end*/;
 				#endif
 
 				#ifdef _ALPHATEST_ON
@@ -2155,7 +2649,7 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 				#ifdef _TRANSMISSION_ASE
 				{
-					float shadow = _TransmissionShadow;
+					float shadow = /*ase_inline_begin*/_TransmissionShadow/*ase_inline_end*/;
 				
 					Light mainLight = GetMainLight( inputData.shadowCoord );
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
@@ -2180,12 +2674,12 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 				
 				#ifdef _TRANSLUCENCY_ASE
 				{
-					float shadow = _TransShadow;
-					float normal = _TransNormal;
-					float scattering = _TransScattering;
-					float direct = _TransDirect;
-					float ambient = _TransAmbient;
-					float strength = _TransStrength;
+					float shadow = /*ase_inline_begin*/_TransShadow/*ase_inline_end*/;
+					float normal = /*ase_inline_begin*/_TransNormal/*ase_inline_end*/;
+					float scattering = /*ase_inline_begin*/_TransScattering/*ase_inline_end*/;
+					float direct = /*ase_inline_begin*/_TransDirect/*ase_inline_end*/;
+					float ambient = /*ase_inline_begin*/_TransAmbient/*ase_inline_end*/;
+					float strength = /*ase_inline_begin*/_TransStrength/*ase_inline_end*/;
 				
 					Light mainLight = GetMainLight( inputData.shadowCoord );
 					float3 mainAtten = mainLight.color * mainLight.distanceAttenuation;
@@ -2243,62 +2737,9 @@ Shader "Polyart/Dreamscape Foliage Billboard"
 
 			ENDHLSL
 		}
-		
+		/*ase_pass_end*/
 	}
 	/*ase_lod*/
 	CustomEditor "UnityEditor.ShaderGraph.PBRMasterGUI"
-	Fallback "Hidden/InternalErrorShader"
-	
+	FallBack "Hidden/InternalErrorShader"
 }
-/*ASEBEGIN
-Version=18900
-0;0;1920;1019;924.2927;177.6681;1;True;True
-Node;AmplifyShaderEditor.RangedFloatNode;1;-1696.424,144.8283;Inherit;False;Property;_ColorBottomLevel;Color Bottom Level;4;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;2;-1720.808,229.4585;Inherit;False;Property;_ColorBottomMaskFade;Color Bottom Mask Fade;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.PosVertexDataNode;3;-1695.34,2.239834;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleAddOpNode;5;-1421.231,98.73718;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ScaleNode;6;-1453.344,231.3355;Inherit;False;2;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;7;-1272.067,94.64922;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TexturePropertyNode;10;-973.818,188.5926;Inherit;True;Property;_FoliageTexture;Foliage Texture;0;0;Create;True;0;0;0;False;0;False;None;ffbef056410e1ad41977db715815bf19;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.ColorNode;8;-970.312,-81.81989;Inherit;False;Property;_ColorBottom;Color Bottom;3;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.3490565,0.2319931,0.09055708,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SaturateNode;9;-966.385,95.41502;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;4;-965.312,-281.8197;Inherit;False;Property;_ColorTop;Color Top;2;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.3483889,1,0.3349056,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SamplerNode;12;-746.34,191.3536;Inherit;True;Property;_TextureSample1;Texture Sample 1;4;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.LerpOp;11;-642.312,-23.82;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;17;-523.761,443.8805;Inherit;True;Property;_TextureSample0;Texture Sample 0;4;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.BillboardNode;27;-17.02667,313.9643;Inherit;False;Cylindrical;False;0;1;FLOAT3;0
-Node;AmplifyShaderEditor.RangedFloatNode;20;-100.0168,142.1;Inherit;False;Property;_AlphaClip;Alpha Clip;6;0;Create;True;0;0;0;False;0;False;0.5;0.02;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.UnpackScaleNormalNode;18;-203.5,448.5;Inherit;False;2;0;FLOAT4;0,0,0,0;False;1;FLOAT;1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;13;-380.812,-24.65041;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TexturePropertyNode;16;-753.239,442.1195;Inherit;True;Property;_NormalTexture;Normal Texture;1;0;Create;True;0;0;0;False;0;False;None;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
-Node;AmplifyShaderEditor.RangedFloatNode;14;-238.7034,630.4377;Inherit;False;Constant;_Smoothness;Smoothness;6;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;28;382,42;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthNormals;0;6;DepthNormals;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=DepthNormals;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;24;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;23;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;26;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Universal2D;0;5;Universal2D;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=Universal2D;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;25;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;Meta;0;4;Meta;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Meta;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;21;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;22;382,-18;Float;False;True;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;2;Polyart/Dreamscape Foliage Billboard;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;18;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;2;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalForward;False;0;Hidden/InternalErrorShader;0;0;Standard;38;Workflow;1;Surface;0;  Refraction Model;0;  Blend;0;Two Sided;0;Fragment Normal Space,InvertActionOnDeselection;0;Transmission;0;  Transmission Shadow;0.5,False,-1;Translucency;0;  Translucency Strength;1,False,-1;  Normal Distortion;0.5,False,-1;  Scattering;2,False,-1;  Direct;0.9,False,-1;  Ambient;0.1,False,-1;  Shadow;0.5,False,-1;Cast Shadows;0;  Use Shadow Threshold;0;Receive Shadows;1;GPU Instancing;1;LOD CrossFade;1;Built-in Fog;1;_FinalColorxAlpha;0;Meta Pass;1;Override Baked GI;0;Extra Pre Pass;0;DOTS Instancing;0;Tessellation;0;  Phong;0;  Strength;0.5,False,-1;  Type;0;  Tess;16,False,-1;  Min;10,False,-1;  Max;25,False,-1;  Edge Length;16,False,-1;  Max Displacement;25,False,-1;Write Depth;0;  Early Z;0;Vertex Position,InvertActionOnDeselection;1;0;8;False;True;False;True;True;True;True;True;False;;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;29;382,-18;Float;False;False;-1;2;UnityEditor.ShaderGraph.PBRMasterGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;0;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;LightMode=UniversalGBuffer;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
-WireConnection;5;0;3;2
-WireConnection;5;1;1;0
-WireConnection;6;0;2;0
-WireConnection;7;0;5;0
-WireConnection;7;1;6;0
-WireConnection;9;0;7;0
-WireConnection;12;0;10;0
-WireConnection;11;0;4;0
-WireConnection;11;1;8;0
-WireConnection;11;2;9;0
-WireConnection;17;0;16;0
-WireConnection;18;0;17;0
-WireConnection;13;0;11;0
-WireConnection;13;1;12;0
-WireConnection;22;0;13;0
-WireConnection;22;1;18;0
-WireConnection;22;4;14;0
-WireConnection;22;6;12;4
-WireConnection;22;7;20;0
-WireConnection;22;8;27;0
-ASEEND*/
-//CHKSM=136C530ECE53152674CDA7BBF7B5A21E17B1CBC5
